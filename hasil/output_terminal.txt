@@ -1,0 +1,124 @@
+
+======================================================================
+1. Membuka file: dari file ke ARRAY ANGKA
+======================================================================
+Tipe objek      : <class 'numpy.ndarray'>
+Bentuk (shape)  : (2576, 1932, 3) -> (tinggi, lebar, kanal)
+Tipe data       : uint8 -> bilangan bulat tak bertanda 8-bit
+Jumlah dimensi  : 3
+Jumlah piksel   : 2576 x 1932 = 4,976,832
+Jumlah angka    : 2576 x 1932 x 3 = 14,930,496
+Nilai minimum   : 0 | maksimum: 241
+Ukuran di memori: 14.24 MB (mentah, tanpa kompresi)
+Ukuran file JPEG: 464.6 KB (terkompresi)
+
+======================================================================
+2. Satu piksel = 3 angka (R, G, B)
+======================================================================
+Piksel (baris=   0, kolom=   0) -> R=195 G=177 B=165
+Piksel (baris=1288, kolom= 966) -> R=141 G=137 B=134
+Piksel (baris=2575, kolom=1931) -> R=132 G=132 B=130
+Piksel (baris=2000, kolom=1000) -> R=114 G=136 B=159
+
+======================================================================
+3. Cuplikan matriks 8x8 per kanal (pojok kiri atas = baris 1900, kolom 600)
+======================================================================
+
+Kanal R (Merah):
+[[136 137 139 142 144 143 140 137]
+ [139 138 139 140 140 138 133 130]
+ [131 129 128 129 130 129 124 120]
+ [121 120 122 126 130 132 130 128]
+ [115 121 123 120 122 130 134 132]
+ [115 121 121 115 113 117 121 119]
+ [115 119 118 110 105 107 111 112]
+ [113 114 111 107 106 110 113 113]]
+
+Kanal G (Hijau):
+[[132 133 135 138 140 139 136 133]
+ [135 134 135 136 136 134 129 126]
+ [127 125 124 125 126 125 120 116]
+ [117 116 118 122 126 128 126 124]
+ [108 114 116 113 115 123 127 125]
+ [108 114 114 108 106 110 114 115]
+ [111 115 114 106 101 103 107 108]
+ [109 110 107 103 102 106 109 109]]
+
+Kanal B (Biru):
+[[121 122 124 127 129 128 125 122]
+ [124 123 124 125 125 123 118 115]
+ [116 114 113 114 115 114 109 105]
+ [106 105 107 111 115 117 115 113]
+ [100 106 108 105 107 115 119 117]
+ [100 106 106 100  98 102 106 106]
+ [102 106 105  97  92  94  98  99]
+ [100 101  98  94  93  97 100 100]]
+
+======================================================================
+4. Pembuktian terbalik: bangun gambar dari angka murni
+======================================================================
+Matriks yang diketik manual:
+ [[  0   0   0   0   0   0   0   0]
+ [  0 255 255   0   0 255 255   0]
+ [  0 255 255   0   0 255 255   0]
+ [  0   0   0   0   0   0   0   0]
+ [  0 255   0   0   0   0 255   0]
+ [  0   0 255   0   0 255   0   0]
+ [  0   0   0 255 255   0   0   0]
+ [  0   0   0   0   0   0   0   0]]
+Tersimpan: 04a (smiley dari matriks), 04b (gradasi dari rumus), 04c (noise angka acak)
+
+======================================================================
+5. Round-trip: array -> file PNG -> array (lossless, angka harus identik)
+======================================================================
+Array identik 100%? -> True
+
+======================================================================
+6. Operasi matematika pada angka = pengolahan citra
+======================================================================
+Grayscale = 0.299R + 0.587G + 0.114B -> shape (2576, 1932)
+Piksel (1900,600): RGB [136 132 121] -> gray 131 | hitung manual: 131.94
+Negatif  : 255 - nilai
+Biner    : 255 jika gray > 128, selain itu 0
+Crop     : arr[1500:2200, 0:900] -> (700, 900, 3)
+Mirror   : arr[:, ::-1] (membalik urutan kolom)
+Downsample 1/16 : arr[::16, ::16] -> (161, 121, 3)
+
+======================================================================
+7. Statistik (citra = kumpulan angka yang bisa dihitung)
+======================================================================
+Kanal R: mean=130.96  std= 43.32  min=  0  max=241
+Kanal G: mean=128.35  std= 39.32  min=  0  max=225
+Kanal B: mean=125.43  std= 36.38  min=  0  max=229
+Gray    : mean=128.27  std= 39.93
+
+======================================================================
+8. Ekspor angka ke CSV / NPY (bisa dibuka di Excel/Notepad)
+======================================================================
+data/patch_gray_16x16.csv  (16x16 angka gray)
+data/citra_penuh.npy       (seluruh array, 14.9 MB)
+
+======================================================================
+9. Zoom bertingkat: dari gambar sampai angka
+======================================================================
+Tersimpan: hasil/09_zoom_bertingkat.png
+
+======================================================================
+10. Visualisasi kanal, operasi, dan histogram
+======================================================================
+Tersimpan: 10_kanal_dan_operasi.png, 10b_histogram.png
+
+======================================================================
+11. Kuantisasi: mengurangi jumlah level angka
+======================================================================
+8-bit -> 256 level keabuan, nilai unik nyata: 224
+4-bit ->  16 level keabuan, nilai unik nyata: 14
+2-bit ->   4 level keabuan, nilai unik nyata: 4
+1-bit ->   2 level keabuan, nilai unik nyata: 2
+
+======================================================================
+12. Bukti akhir: ubah ANGKA tertentu, gambar ikut berubah
+======================================================================
+Baris 1700-1760 -> [255,0,0] (merah), baris 1780-1840 -> [0,0,0] (hitam)
+
+KESIMPULAN: citra digital = array numerik N-dimensi; semua operasi citra = operasi matematika pada array.

@@ -1,0 +1,5 @@
+data/citra_penuh.npy
+hasil/05_roundtrip.png
+__pycache__/
+*.pyc
+.venv/
